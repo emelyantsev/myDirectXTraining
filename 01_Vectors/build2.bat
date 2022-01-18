@@ -1,0 +1,1 @@
+cl example2.cpp /EHsc 

@@ -1,0 +1,1 @@
+cl App4.cpp InitD3dApp.cpp ..\Common\d3dApp.cpp ..\Common\d3dUtils.cpp   /EHsc /I..\Common -DUNICODE /link gdi32.lib user32.lib
