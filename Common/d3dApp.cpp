@@ -4,13 +4,38 @@ D3DApp::D3DApp() {}
 
 D3DApp::~D3DApp() {
 
-
     if( md3dDevice != nullptr ) {
 	
     	FlushCommandQueue();
     }
 }
 
+HWND D3DApp::MainWnd() const {
+
+	return mhMainWnd;
+}
+
+float D3DApp::AspectRatio() const {
+    
+	return static_cast<float>(mClientWidth) / mClientHeight;
+}
+
+bool D3DApp::Get4xMsaaState()const
+{
+    return m4xMsaaState;
+}
+
+void D3DApp::Set4xMsaaState(bool value)
+{
+    if(m4xMsaaState != value)
+    {
+        m4xMsaaState = value;
+
+        // Recreate the swapchain and buffers with new multisample settings.
+        CreateSwapChain();
+        OnResize();
+    }
+}
 
 bool D3DApp::Initialize() {
 
@@ -33,6 +58,8 @@ bool D3DApp::Initialize() {
 int D3DApp::Run() {
 
     MSG msg = { 0 };
+
+	mTimer.Reset();
  
 	while (msg.message != WM_QUIT) 
 	{
@@ -43,8 +70,18 @@ int D3DApp::Run() {
 		}		
 		else {	
 
-			Update();	
-            Draw();
+			mTimer.Tick();
+
+			if( !mAppPaused )
+			{
+				CalculateFrameStats();
+				Update();	
+                Draw();
+			}
+			else
+			{
+				Sleep(100);
+			}
         }
     }
 
@@ -54,89 +91,151 @@ int D3DApp::Run() {
 
 LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
-    switch( msg )     {
+    switch( msg )
+	{
+	// WM_ACTIVATE is sent when the window is activated or deactivated.  
+	// We pause the game when the window is deactivated and unpause it 
+	// when it becomes active.  
+	case WM_ACTIVATE:
+		if( LOWORD(wParam) == WA_INACTIVE )
+		{
+			mAppPaused = true;
+			mTimer.Stop();
+		}
+		else
+		{
+			mAppPaused = false;
+			mTimer.Start();
+		}
+		return 0;
 
+	// WM_SIZE is sent when the user resizes the window.  
+	case WM_SIZE:
+		// Save the new client area dimensions.
+		mClientWidth  = LOWORD(lParam);
+		mClientHeight = HIWORD(lParam);
+		if( md3dDevice )
+		{
+			if( wParam == SIZE_MINIMIZED )
+			{
+				mAppPaused = true;
+				mMinimized = true;
+				mMaximized = false;
+			}
+			else if( wParam == SIZE_MAXIMIZED )
+			{
+				mAppPaused = false;
+				mMinimized = false;
+				mMaximized = true;
+				OnResize();
+			}
+			else if( wParam == SIZE_RESTORED )
+			{
+				
+				// Restoring from minimized state?
+				if( mMinimized )
+				{
+					mAppPaused = false;
+					mMinimized = false;
+					OnResize();
+				}
 
-        case WM_ACTIVATE:
+				// Restoring from maximized state?
+				else if( mMaximized )
+				{
+					mAppPaused = false;
+					mMaximized = false;
+					OnResize();
+				}
+				else if( mResizing )
+				{
+					// If user is dragging the resize bars, we do not resize 
+					// the buffers here because as the user continuously 
+					// drags the resize bars, a stream of WM_SIZE messages are
+					// sent to the window, and it would be pointless (and slow)
+					// to resize for each WM_SIZE message received from dragging
+					// the resize bars.  So instead, we reset after the user is 
+					// done resizing the window and releases the resize bars, which 
+					// sends a WM_EXITSIZEMOVE message.
+				}
+				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
+				{
+					OnResize();
+				}
+			}
+		}
+		return 0;
 
-            if( LOWORD(wParam) == WA_INACTIVE )
-            {
-                mAppPaused = true;
-            }
-            else
-            {
-                mAppPaused = false;
-                
-            }
-            return 0;
+	// WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
+	case WM_ENTERSIZEMOVE:
+		mAppPaused = true;
+		mResizing  = true;
+		mTimer.Stop();
+		return 0;
 
-        case WM_SIZE:
-            
-            mClientWidth  = LOWORD(lParam);
-            mClientHeight = HIWORD(lParam);
+	// WM_EXITSIZEMOVE is sent when the user releases the resize bars.
+	// Here we reset everything based on the new window dimensions.
+	case WM_EXITSIZEMOVE:
+		mAppPaused = false;
+		mResizing  = false;
+		mTimer.Start();
+		OnResize();
+		return 0;
+ 
+	// WM_DESTROY is sent when the window is being destroyed.
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
 
-            if( md3dDevice )
-            {
-                if( wParam == SIZE_MINIMIZED )
-                {
-                    mAppPaused = true;
-                    mMinimized = true;
-                    mMaximized = false;
-                }
-                else if( wParam == SIZE_MAXIMIZED )
-                {
-                    mAppPaused = false;
-                    mMinimized = false;
-                    mMaximized = true;
-                    OnResize();
-                }
-                else if( wParam == SIZE_RESTORED )
-                {
-                             
-                    if( mMinimized )
-                    {
-                        mAppPaused = false;
-                        mMinimized = false;
-                        OnResize();
-                    }
-                 
-                    else if( mMaximized )
-                    {
-                        mAppPaused = false;
-                        mMaximized = false;
-                        OnResize();
-                    }
-                    else if( mResizing )
-                    {
-                    }
-                    else 
-                    {
-                        OnResize();
-                    }
-                }
-            }
-            return 0;
+	// The WM_MENUCHAR message is sent when a menu is active and the user presses 
+	// a key that does not correspond to any mnemonic or accelerator key. 
+	case WM_MENUCHAR:
+        // Don't beep when we alt-enter.
+        return MAKELRESULT(0, MNC_CLOSE);
 
-        case WM_ENTERSIZEMOVE:
-            mAppPaused = true;
-            mResizing  = true;
-            return 0;
+	// Catch this message so to prevent the window from becoming too small.
+	case WM_GETMINMAXINFO:
+		((MINMAXINFO*)lParam)->ptMinTrackSize.x = 200;
+		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200; 
+		return 0;
 
-        case WM_EXITSIZEMOVE:
-            mAppPaused = false;
-            mResizing  = false;
-            OnResize();
-            return 0;
+	case WM_LBUTTONDOWN:
+	case WM_MBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+		OnMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
+		
+	case WM_LBUTTONUP:
+	case WM_MBUTTONUP:
+	case WM_RBUTTONUP:
+	
+		OnMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
+	
+	case WM_MOUSEMOVE:
+	
+		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
+    
+	case WM_KEYUP:
 
-        case WM_DESTROY:
+        if (wParam == VK_ESCAPE)
+        {
+            PostQuitMessage(0);
+        }
+        else if( (int) wParam == VK_F2) {
 
-            PostQuitMessage( 0 );
-            return 0;
+            Set4xMsaaState(!m4xMsaaState);
+		}
+		else if (wParam == VK_F11) {
 
-        default:
-            return DefWindowProc( hwnd, msg, wParam, lParam );
-    }
-    return TRUE;
+			OnChangeFullScreenMode();
+		}
+
+        return 0;
+	}
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 
 }
 
@@ -212,101 +311,81 @@ bool D3DApp::InitMainWindow() {
 
 bool D3DApp::InitDirect3D() {
 
-    // Create Factory
+    ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(&mdxgiFactory)));
 
-    HRESULT result = ::CreateDXGIFactory1( __uuidof(**( &mdxgiFactory) ) , IID_PPV_ARGS_Helper( &mdxgiFactory ) ) ;
-
-    if (result != S_OK ) {
-
-        exit( EXIT_FAILURE );
-    }
-
-
-    // Create Device
-
-    HRESULT hardwareResult = D3D12CreateDevice(
-		nullptr,             
+	// Try to create hardware device.
+	HRESULT hardwareResult = D3D12CreateDevice(
+		nullptr,             // default adapter
 		D3D_FEATURE_LEVEL_11_0,
-		IID_PPV_ARGS( &md3dDevice ) 
-    );
+		IID_PPV_ARGS(&md3dDevice));
 
-    if ( FAILED(hardwareResult) ) {
+	// Fallback to WARP device.
+	if(FAILED(hardwareResult))
+	{
+		Microsoft::WRL::ComPtr<IDXGIAdapter> pWarpAdapter;
+		ThrowIfFailed(mdxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&pWarpAdapter)));
 
-        exit( EXIT_FAILURE );
-    }
+		ThrowIfFailed(D3D12CreateDevice(
+			pWarpAdapter.Get(),
+			D3D_FEATURE_LEVEL_11_0,
+			IID_PPV_ARGS(&md3dDevice)));
+	}
 
-    // Create Fence
+	ThrowIfFailed(md3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
+		IID_PPV_ARGS(&mFence)));
 
-    result = md3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
-		IID_PPV_ARGS(&mFence)) ;
-
-    if (result != S_OK ) {
-
-        exit( EXIT_FAILURE );
-    }
-
-    // Get Descriptors size
-
-    mRtvDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	mRtvDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	mDsvDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 	mCbvSrvUavDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-    // Check multisampling support
+    // Check 4X MSAA quality support for our back buffer format.
+    // All Direct3D 11 capable devices support 4X MSAA for all render 
+    // target formats, so we only need to check quality support.
 
-    D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS msQualityLevels;
+	D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS msQualityLevels;
 	msQualityLevels.Format = mBackBufferFormat;
 	msQualityLevels.SampleCount = 4;
 	msQualityLevels.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
 	msQualityLevels.NumQualityLevels = 0;
-
-
-    result = md3dDevice->CheckFeatureSupport(
+	ThrowIfFailed(md3dDevice->CheckFeatureSupport(
 		D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS,
 		&msQualityLevels,
-		sizeof(msQualityLevels)) ;
+		sizeof(msQualityLevels)));
 
     m4xMsaaQuality = msQualityLevels.NumQualityLevels;
 	assert(m4xMsaaQuality > 0 && "Unexpected MSAA quality level.");
+	
 
-
-    CreateCommandObjects();
+	CreateCommandObjects();
     CreateSwapChain();
     CreateRtvAndDsvDescriptorHeaps();
 
-    return true;
+	return true;
 }
 
 
 
 void D3DApp::CreateRtvAndDsvDescriptorHeaps() {
 
-    HRESULT result;
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
 
-    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
     rtvHeapDesc.NumDescriptors = SwapChainBufferCount;
     rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
     rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	rtvHeapDesc.NodeMask = 0;
-    result = md3dDevice->CreateDescriptorHeap(
-        &rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf()));
 
-    if (result != S_OK ) {
+    ThrowIfFailed(md3dDevice->CreateDescriptorHeap(
+        &rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
 
-        exit( EXIT_FAILURE );
-    }
 
     D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
     dsvHeapDesc.NumDescriptors = 1;
     dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
     dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	dsvHeapDesc.NodeMask = 0;
-    result = md3dDevice->CreateDescriptorHeap(
-        &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf()));
 
-    if (result != S_OK ) {
-
-        exit( EXIT_FAILURE );
-    }
+    ThrowIfFailed(md3dDevice->CreateDescriptorHeap(
+        &dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
 }
 
 
@@ -412,50 +491,32 @@ void D3DApp::OnResize()
 
 void D3DApp::CreateCommandObjects() {
 
-    HRESULT result;
-
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	ThrowIfFailed(md3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mCommandQueue)));
 
-	result = md3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mCommandQueue)) ;
-
-    if (result != S_OK ) {
-
-        exit( EXIT_FAILURE );
-    }
-
-	result = md3dDevice->CreateCommandAllocator(
+	ThrowIfFailed(md3dDevice->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		IID_PPV_ARGS(mDirectCmdListAlloc.GetAddressOf()) ) ;
+		IID_PPV_ARGS(mDirectCmdListAlloc.GetAddressOf())));
 
-    
-    if (result != S_OK ) {
-
-        exit( EXIT_FAILURE );
-    }
-
-	result = md3dDevice->CreateCommandList(
+	ThrowIfFailed(md3dDevice->CreateCommandList(
 		0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		mDirectCmdListAlloc.Get(), 
-		nullptr,                   
-		IID_PPV_ARGS(mCommandList.GetAddressOf()));
+		mDirectCmdListAlloc.Get(), // Associated command allocator
+		nullptr,                   // Initial PipelineStateObject
+		IID_PPV_ARGS(mCommandList.GetAddressOf())));
 
-	
-    if (result != S_OK ) {
-
-        exit( EXIT_FAILURE );
-    }
-
+	// Start off in a closed state.  This is because the first time we refer 
+	// to the command list we will Reset it, and it needs to be closed before
+	// calling Reset.
 	mCommandList->Close();
 
 }
 
 void D3DApp::CreateSwapChain() {
 
-    HRESULT result;
-
+       // Release the previous swapchain we will be recreating.
     mSwapChain.Reset();
 
     DXGI_SWAP_CHAIN_DESC sd;
@@ -475,44 +536,32 @@ void D3DApp::CreateSwapChain() {
 	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
     sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	
-    result = mdxgiFactory->CreateSwapChain(
+	// Note: Swap chain uses queue to perform flush.
+    ThrowIfFailed(mdxgiFactory->CreateSwapChain(
 		mCommandQueue.Get(),
 		&sd, 
-		mSwapChain.GetAddressOf()) ;
-
-    if (result != S_OK ) {
-
-        exit( EXIT_FAILURE );
-    }
-
+		mSwapChain.GetAddressOf()));
 }
 
 void D3DApp::FlushCommandQueue() {
 
-    HRESULT result ;
-
+    // Advance the fence value to mark commands up to this fence point.
     mCurrentFence++;
 
-    result = mCommandQueue->Signal(mFence.Get(), mCurrentFence);
+    // Add an instruction to the command queue to set a new fence point.  Because we 
+	// are on the GPU timeline, the new fence point won't be set until the GPU finishes
+	// processing all the commands prior to this Signal().
+    ThrowIfFailed(mCommandQueue->Signal(mFence.Get(), mCurrentFence));
 
-    if (result != S_OK ) {
-
-        exit( EXIT_FAILURE );
-    }
-	
+	// Wait until the GPU has completed commands up to this fence point.
     if(mFence->GetCompletedValue() < mCurrentFence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
 
-        
-        result = mFence->SetEventOnCompletion(mCurrentFence, eventHandle);
+        // Fire event when GPU hits current fence.  
+        ThrowIfFailed(mFence->SetEventOnCompletion(mCurrentFence, eventHandle));
 
-        if (result != S_OK ) {
-
-            exit( EXIT_FAILURE );
-        }
-
+        // Wait until the GPU hits current fence event is fired.
 		WaitForSingleObject(eventHandle, INFINITE);
         CloseHandle(eventHandle);
 	}
@@ -536,4 +585,88 @@ D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView()const
 D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::DepthStencilView()const
 {
 	return mDsvHeap->GetCPUDescriptorHandleForHeapStart();
+}
+
+void D3DApp::CalculateFrameStats()
+{
+	// Code computes the average frames per second, and also the 
+	// average time it takes to render one frame.  These stats 
+	// are appended to the window caption bar.
+    
+	static int frameCnt = 0;
+	static float timeElapsed = 0.0f;
+
+	frameCnt++;
+
+	// Compute averages over one second period.
+	if( (mTimer.TotalTime() - timeElapsed) >= 1.0f ) {
+
+		float fps = (float) frameCnt; // fps = frameCnt / 1
+		float mspf = 1000.0f / fps;
+
+        std::wstring fpsStr = std::to_wstring(fps);
+        std::wstring mspfStr = std::to_wstring(mspf);
+
+        std::wstring windowText = mMainWndCaption +
+            L"    fps: " + fpsStr +
+            L"   mspf: " + mspfStr;
+
+        SetWindowText(mhMainWnd, windowText.c_str());
+
+		// Reset for next average.
+		frameCnt = 0;
+		timeElapsed += 1.0f;
+	}
+}
+
+void D3DApp::OnChangeFullScreenMode() {
+
+	isFullScreen = !isFullScreen;
+
+	if ( isFullScreen ) {
+
+		::GetWindowRect( mhMainWnd, &rect );
+
+		prevStyle = ::GetWindowLongW( mhMainWnd, GWL_STYLE );
+		prevExtStyle = ::GetWindowLongW( mhMainWnd, GWL_EXSTYLE );
+			
+		DEVMODE devMode;
+
+		devMode.dmSize = sizeof( devMode );
+		devMode.dmPelsWidth = 1920;
+		devMode.dmPelsHeight = 1080;
+		devMode.dmBitsPerPel = 32;
+		devMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;
+
+
+		if( ::ChangeDisplaySettingsW( &devMode, CDS_FULLSCREEN ) != DISP_CHANGE_SUCCESSFUL ) {
+			
+			MessageBox( NULL, TEXT( "Failed to change display mode for fullscreen!" ),
+				TEXT( "ERROR title" ), MB_ICONERROR );
+
+			exit( -1 );
+		}
+
+		::SetWindowLongW( mhMainWnd, GWL_STYLE, WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS );
+		::SetWindowLongW( mhMainWnd, GWL_EXSTYLE, WS_EX_APPWINDOW );
+		::SetWindowPos( mhMainWnd, HWND_TOP, 0, 0, 1920, 1080, SWP_FRAMECHANGED );
+		::ShowWindow( mhMainWnd, SW_SHOW );
+	
+	}
+	else {
+
+		if( ::ChangeDisplaySettingsW( nullptr, 0 ) != DISP_CHANGE_SUCCESSFUL ) {
+
+			MessageBox( NULL, TEXT( "Failed to change display mode back from fullscreen!" ),
+				TEXT( "ERROR title" ), MB_ICONERROR );
+			exit( -1 );
+		}
+
+		::SetWindowLongW( mhMainWnd, GWL_STYLE, prevStyle );
+		::SetWindowLongW( mhMainWnd, GWL_EXSTYLE, prevExtStyle );
+		::SetWindowPos( mhMainWnd, HWND_TOP, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_FRAMECHANGED );
+		::ShowWindow( mhMainWnd, SW_SHOW );
+
+	}
+
 }

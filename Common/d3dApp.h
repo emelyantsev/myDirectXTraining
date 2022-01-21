@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "d3dUtils.h"
+#include "GameTimer.h"
 
 class D3DApp {
 
@@ -14,8 +15,15 @@ class D3DApp {
 
         virtual ~D3DApp();
 
+    public:
 
-        bool Initialize();
+        HWND MainWnd() const;
+	    float AspectRatio() const;
+
+        bool Get4xMsaaState() const;
+        void Set4xMsaaState(bool value);
+
+        virtual bool Initialize();
         int Run();
 
     protected:
@@ -23,8 +31,16 @@ class D3DApp {
         virtual void Update() = 0;
         virtual void Draw() = 0;
 
-        void OnResize(); 
+        virtual void OnResize(); 
 
+        virtual void OnMouseDown(WPARAM btnState, int x, int y) {}
+	    virtual void OnMouseUp(WPARAM btnState, int x, int y)  {}
+	    virtual void OnMouseMove(WPARAM btnState, int x, int y) {}
+
+        virtual void OnChangeFullScreenMode();
+
+
+    protected:
 
         bool InitMainWindow();
 	    bool InitDirect3D();
@@ -39,10 +55,11 @@ class D3DApp {
 
         void FlushCommandQueue();
 
-
         ID3D12Resource* CurrentBackBuffer() const;
 	    D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
 	    D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
+
+        void CalculateFrameStats();
 
     protected:
 
@@ -50,13 +67,15 @@ class D3DApp {
         HWND mhMainWnd = nullptr;
 
         bool mAppPaused = false; 
-
         bool mMinimized = false;  
         bool mMaximized = false;  
         bool mResizing = false;   
+        bool mFullscreenState = false;
 
         bool m4xMsaaState = false;
         UINT m4xMsaaQuality = 0; 
+
+        GameTimer mTimer;
 
         Microsoft::WRL::ComPtr<IDXGIFactory4> mdxgiFactory;
         Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
@@ -92,4 +111,12 @@ class D3DApp {
 
         int mClientWidth = 800;
 	    int mClientHeight = 600;
+
+        int cxClient, cyClient;
+
+        bool isFullScreen = false;
+        int prevStyle, prevExtStyle;
+
+        RECT rect;
+        std::string dimStr;
 }; 

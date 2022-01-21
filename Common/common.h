@@ -1,11 +1,15 @@
 #include <windows.h>
+#include <WindowsX.h>
 #include <wrl.h>
 #include <comdef.h>
 
 #include <cstdlib>
 #include <string>
 #include <iostream>
-
+#include <fstream>
+#include <vector>
+#include <unordered_map>
+#include <array>
 
 
 #include <dxgi1_4.h>
