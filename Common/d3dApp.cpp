@@ -27,6 +27,14 @@ bool D3DApp::Get4xMsaaState()const
 
 void D3DApp::Set4xMsaaState(bool value)
 {
+	/* 	Multisampling doesn't work in DirectX 12
+
+		You should just create another bigger buffer for multisampling and then use ResolveSubresource
+		https://www.gamedev.net/forums/topic/673717-msaa-and-checkfeaturesupport/
+		https://www.gamedev.net/forums/topic/686804-d3d12-enabling-multi-sampling/
+		https://stackoverflow.com/questions/45492340/how-to-use-multisampling-on-direct-x12
+	*/
+
     if(m4xMsaaState != value)
     {
         m4xMsaaState = value;
@@ -225,7 +233,7 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         else if( (int) wParam == VK_F2) {
 
-            Set4xMsaaState(!m4xMsaaState);
+           // Set4xMsaaState(!m4xMsaaState);
 		}
 		else if (wParam == VK_F11) {
 
