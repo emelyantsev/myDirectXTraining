@@ -2,7 +2,11 @@
 
 BoxApp::BoxApp() {}
 
-BoxApp::~BoxApp() {}
+BoxApp::~BoxApp() {
+
+	if(md3dDevice != nullptr)
+        FlushCommandQueue();
+}
 
 bool BoxApp::Initialize()
 {

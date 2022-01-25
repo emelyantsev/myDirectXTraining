@@ -2,7 +2,11 @@
 
 InitD3DApp::InitD3DApp() {}
 
-InitD3DApp::~InitD3DApp() {}
+InitD3DApp::~InitD3DApp() {
+
+	if(md3dDevice != nullptr)
+        FlushCommandQueue();
+}
 
 void InitD3DApp::Update() {}
 
