@@ -1,5 +1,8 @@
 #include "LandAndWavesApp.h"
 
+
+const int gNumFrameResources = 3;
+
 LandAndWavesApp::LandAndWavesApp() 
 {
 }

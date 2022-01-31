@@ -12,7 +12,7 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-const int gNumFrameResources = 3;
+extern const int gNumFrameResources;
 
 // Lightweight structure stores parameters to draw a shape.  This will
 // vary from app-to-app.
