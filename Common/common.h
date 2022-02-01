@@ -21,6 +21,7 @@
 #include <DirectXCollision.h>
 
 #include "d3dx12.h"
+#include "DDSTextureLoader.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
