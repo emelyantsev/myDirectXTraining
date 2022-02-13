@@ -18,3 +18,4 @@ I've added some tweaks such as:
 9. Blending
 10. Stenciling
 11. Geometry shaders
+12. Compute shaders
