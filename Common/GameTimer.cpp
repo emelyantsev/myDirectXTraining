@@ -55,8 +55,6 @@ void GameTimer::Reset()
 	__int64 currTime;
 	::QueryPerformanceCounter( (LARGE_INTEGER*) &currTime);
 
-	std::cout << currTime << std::endl;
-
 	mBaseTime = currTime;
 	mPrevTime = currTime;
 	mStopTime = 0;

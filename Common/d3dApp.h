@@ -49,7 +49,7 @@ class D3DApp {
         LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) ;
 
 
-        void CreateRtvAndDsvDescriptorHeaps();
+        virtual void CreateRtvAndDsvDescriptorHeaps();
         void CreateCommandObjects();
         void CreateSwapChain();
 
