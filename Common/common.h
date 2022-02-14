@@ -1,3 +1,5 @@
+#pragma once
+
 #include <windows.h>
 #include <WindowsX.h>
 #include <wrl.h>

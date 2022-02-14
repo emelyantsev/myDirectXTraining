@@ -45,3 +45,5 @@
 
 *.pdb
 *.ilk
+
+results.txt
