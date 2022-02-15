@@ -19,3 +19,11 @@ I've added some tweaks such as:
 10. Stenciling
 11. Geometry shaders
 12. Compute shaders
+13. Tessellation
+
+
+### Screenshots
+
+13. Tessellation
+![Basic tessellation](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_BasicTesselation.png)
+![Bezier surface](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_BezierPatch.png)
