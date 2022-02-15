@@ -48,3 +48,5 @@ I've added some tweaks such as:
 ![Basic tessellation](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_BasicTesselation.png)
 
 ![Bezier surface](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_BezierPatch.png)
+
+![Visualize tessellation factors for quad](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_TestFactors.png)
