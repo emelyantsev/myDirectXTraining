@@ -25,5 +25,7 @@ I've added some tweaks such as:
 ### Screenshots
 
 13. Tessellation
+
 ![Basic tessellation](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_BasicTesselation.png)
+
 ![Bezier surface](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_BezierPatch.png)
