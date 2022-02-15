@@ -24,6 +24,17 @@ I've added some tweaks such as:
 
 ### Screenshots
 
+
+4. Initialization
+
+![Initialization](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/04b_Initialization.png)
+
+5. Drawing
+
+![Drawing box](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/05_Drawing.png)
+
+![Drawing pyramid](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/05_Exercises.png)
+
 13. Tessellation
 
 ![Basic tessellation](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_BasicTesselation.png)
