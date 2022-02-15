@@ -6,7 +6,7 @@
 #include "GeometryGenerator.h"
 #include "FrameResource.h"
 
-const int gNumFrameResources = 3;
+extern const int gNumFrameResources;
 
 
 // Lightweight structure stores parameters to draw a shape.  This will

@@ -1,5 +1,7 @@
 #include "ShapesApp.h"
 
+const int gNumFrameResources = 3;
+
 ShapesApp::ShapesApp() {}
 
 ShapesApp::~ShapesApp()

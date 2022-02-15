@@ -1,5 +1,7 @@
 #include "ShapesApp.h"
 
+const int gNumFrameResources = 3;
+
 ShapesApp::ShapesApp() {}
 
 ShapesApp::~ShapesApp()
@@ -634,7 +636,7 @@ void ShapesApp::BuildRenderItems()
 	*/
 
 	auto skullRitem = std::make_unique<RenderItem>();
-	XMStoreFloat4x4(&skullRitem->World, DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f)*DirectX::XMMatrixTranslation(0.0f, 1.0f, 0.0f));
+	XMStoreFloat4x4(&skullRitem->World, DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f)*DirectX::XMMatrixTranslation(0.0f, -1.0f, 0.0f));
 	
 	skullRitem->ObjCBIndex = 0;
 	

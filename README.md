@@ -35,6 +35,14 @@ I've added some tweaks such as:
 
 ![Drawing pyramid](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/05_Exercises.png)
 
+6. More drawing
+
+![Land and waves](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/06_LandAndWaves.png)
+
+![Basic shapes](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/06_Shapes.png)
+
+![Skull](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/06_SkullViewer.png)
+
 13. Tessellation
 
 ![Basic tessellation](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_BasicTesselation.png)
