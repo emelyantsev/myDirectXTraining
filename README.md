@@ -47,7 +47,7 @@ I've added some tweaks such as:
 
 ![Lighted columns](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/07_LitColumns.png)
 
-![Lighted waves](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/06_Shapes.png)
+![Lighted waves](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/07_LitWaves.png)
 
 #### 8. Textures
 
