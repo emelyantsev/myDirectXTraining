@@ -25,17 +25,17 @@ I've added some tweaks such as:
 ### Screenshots
 
 
-4. Initialization
+#### 4. Initialization
 
 ![Initialization](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/04b_Initialization.png)
 
-5. Drawing
+#### 5. Drawing
 
 ![Drawing box](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/05_Drawing.png)
 
 ![Drawing pyramid](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/05_Exercises.png)
 
-6. More drawing
+#### 6. More drawing
 
 ![Land and waves](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/06_LandAndWaves.png)
 
@@ -43,7 +43,21 @@ I've added some tweaks such as:
 
 ![Skull](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/06_SkullViewer.png)
 
-13. Tessellation
+#### 7. Lighting
+
+![Lighted columns](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/07_LitColumns.png)
+
+![Lighted waves](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/06_Shapes.png)
+
+#### 8. Textures
+
+![Textured crate](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/08_Crate.png)
+
+![Textured columns](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/08_TexColumns.png)
+
+![Textured waves](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/08_TexWaves.png)
+
+#### 13. Tessellation
 
 ![Basic tessellation](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_BasicTesselation.png)
 
