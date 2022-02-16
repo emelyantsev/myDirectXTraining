@@ -57,6 +57,24 @@ I've added some tweaks such as:
 
 ![Textured waves](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/08_TexWaves.png)
 
+#### 9. Blending
+
+![Blending demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/09_BlendDemo.png)
+
+#### 10. Stenciling
+
+![Stenciling demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/10_StencilDemo.png)
+
+#### 11. Geometry shaders
+
+![Tree billboards demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/11_TreeBillboards.png)
+
+#### 12. Compute shaders
+
+![Blur demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/12_Blur.png)
+
+![Sobel filter demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/12_SobelFilter.png)
+
 #### 13. Tessellation
 
 ![Basic tessellation](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_BasicTesselation.png)
