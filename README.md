@@ -20,6 +20,7 @@ I've added some tweaks such as:
 11. Geometry shaders
 12. Compute shaders
 13. Tessellation
+14. Camera and dynamic indexing
 
 
 ### Screenshots
@@ -82,3 +83,7 @@ I've added some tweaks such as:
 ![Bezier surface](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_BezierPatch.png)
 
 ![Visualize tessellation factors for quad](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/13_TestFactors.png)
+
+#### 14. Camera and dynamic indexing
+
+![Camera and dynamic indexing demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/14_CameraAndDynamicIndexing.png)
