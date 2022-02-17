@@ -61,6 +61,7 @@ public:
 	// Strafe/Walk the camera a distance d.
 	void Strafe(float d);
 	void Walk(float d);
+	void Lift(float d);
 
 	// Rotate the camera.
 	void Pitch(float angle);

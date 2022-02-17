@@ -21,6 +21,7 @@ I've added some tweaks such as:
 12. Compute shaders
 13. Tessellation
 14. Camera and dynamic indexing
+15. Instancing and frustrum culling
 
 
 ### Screenshots
@@ -87,3 +88,7 @@ I've added some tweaks such as:
 #### 14. Camera and dynamic indexing
 
 ![Camera and dynamic indexing demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/14_CameraAndDynamicIndexing.png)
+
+#### 15. Instancing and frustrum culling
+
+![Camera and dynamic indexing demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/15_InstancingAndCulling.png)
