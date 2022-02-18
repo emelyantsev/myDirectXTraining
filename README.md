@@ -22,6 +22,7 @@ I've added some tweaks such as:
 13. Tessellation
 14. Camera and dynamic indexing
 15. Instancing and frustrum culling
+16. Picking
 
 
 ### Screenshots
@@ -92,3 +93,7 @@ I've added some tweaks such as:
 #### 15. Instancing and frustrum culling
 
 ![Camera and dynamic indexing demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/15_InstancingAndCulling.png)
+
+#### 16. Instancing and frustrum culling
+
+![Picking demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/16_Picking.png)
