@@ -94,6 +94,6 @@ I've added some tweaks such as:
 
 ![Camera and dynamic indexing demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/15_InstancingAndCulling.png)
 
-#### 16. Instancing and frustrum culling
+#### 16. Picking
 
 ![Picking demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/16_Picking.png)
