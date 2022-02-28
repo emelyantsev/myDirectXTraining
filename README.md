@@ -23,6 +23,7 @@ I've added some tweaks such as:
 14. Camera and dynamic indexing
 15. Instancing and frustrum culling
 16. Picking
+17. Cube mapping
 
 
 ### Screenshots
@@ -97,3 +98,9 @@ I've added some tweaks such as:
 #### 16. Picking
 
 ![Picking demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/16_Picking.png)
+
+#### 17. Cube mapping
+
+![Cube map demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/17_CubeMap.png)
+
+![Dynamic cube demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/17_DynamicCube.png)
