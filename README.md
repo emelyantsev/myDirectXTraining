@@ -104,3 +104,7 @@ I've added some tweaks such as:
 ![Cube map demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/17_CubeMap.png)
 
 ![Dynamic cube demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/17_DynamicCube.png)
+
+#### 18. Normal mapping
+
+![Normal mapping demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/18_NormalMap.png)
