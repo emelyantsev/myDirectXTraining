@@ -24,6 +24,8 @@ I've added some tweaks such as:
 15. Instancing and frustrum culling
 16. Picking
 17. Cube mapping
+18. Normal mapping
+19. Shadow mapping
 
 
 ### Screenshots
@@ -108,3 +110,7 @@ I've added some tweaks such as:
 #### 18. Normal mapping
 
 ![Normal mapping demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/18_NormalMap.png)
+
+#### 19. Shadow mapping
+
+![Shadow mapping demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/19_Shadows.png)
