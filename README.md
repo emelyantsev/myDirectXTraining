@@ -26,6 +26,7 @@ I've added some tweaks such as:
 17. Cube mapping
 18. Normal mapping
 19. Shadow mapping
+20. Ambient occlusion
 
 
 ### Screenshots
@@ -114,3 +115,7 @@ I've added some tweaks such as:
 #### 19. Shadow mapping
 
 ![Shadow mapping demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/19_Shadows.png)
+
+#### 20. Ambient occlusion
+
+![Ambient occlusion demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/20_AmbientOcclusion.png)
