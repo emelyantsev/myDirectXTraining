@@ -27,6 +27,7 @@ I've added some tweaks such as:
 18. Normal mapping
 19. Shadow mapping
 20. Ambient occlusion
+21. Quaternions
 
 
 ### Screenshots
@@ -119,3 +120,7 @@ I've added some tweaks such as:
 #### 20. Ambient occlusion
 
 ![Ambient occlusion demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/20_AmbientOcclusion.png)
+
+#### 21. Quat demo
+
+![Quat demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/21_QuatDemo.png)
