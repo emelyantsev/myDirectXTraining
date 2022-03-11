@@ -28,6 +28,7 @@ I've added some tweaks such as:
 19. Shadow mapping
 20. Ambient occlusion
 21. Quaternions
+22. Character animation
 
 
 ### Screenshots
@@ -124,3 +125,7 @@ I've added some tweaks such as:
 #### 21. Quat demo
 
 ![Quat demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/21_QuatDemo.png)
+
+#### 22. Character animation demo
+
+![Character animation demo](https://github.com/emelyantsev/myDirectXTraining/blob/main/Screenshots/22_SkinnedMesh.png)
